@@ -1,4 +1,4 @@
-# Test dependencies + resource
+# Test dependencies + resources
 
 Maven artifact to be imported for getting all necessary dependencies for
   * JUnit,
@@ -13,6 +13,9 @@ Please add this artifact as a dependency with `scope=test` to your project.
 
 In order to also get the right dependency versions please also import `de.scrum-master.test:test-bom`
 with `type=pom`, `scope=import` from the `dependencyManagement` section of your project.
+
+See also [this test dependency BoM](https://github.com/kriegaex/MavenTestBom) and
+[this sample project](https://github.com/kriegaex/GebSpockSamples).
 
 Example:
 
