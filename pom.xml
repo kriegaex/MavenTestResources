@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.scrum-master</groupId>
+  <artifactId>test-resources</artifactId>
+  <version>1.0</version>
+
+  <name>Test resources + dependencies</name>
+  <description>
+    Artifact to be imported for getting all necessary dependencies for
+    JUnit, Spock, Geb, Selenium + web drivers, web driver manager by bonigarcia
+    plus basic configuration like GebConfig.
+
+    Please add this artifact as a dependency with scope=test to your project.
+
+    In order to also get the right dependency versions please also import de.scrum-master.test:test-bom
+    with type=pom, scope=import from the dependencyManagement section of your project.
+  </description>
+
+  <organization>
+    <name>Scrum-Master.de - Agile Project Management</name>
+    <url>http://scrum-master.de</url>
+  </organization>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Maven Compiler Plugin -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <!-- Groovy compiler for Spock/Geb tests -->
+    <version.groovy-eclipse-compiler>2.9.2-01</version.groovy-eclipse-compiler>
+    <version.groovy-eclipse-batch>2.4.3-01</version.groovy-eclipse-batch>
+
+    <!-- Maven site -->
+    <version.wagon-ssh>2.8</version.wagon-ssh>
+
+    <geb.env>phantomjs</geb.env>
+  </properties>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.0</version>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <!-- IMPORTANT -->
+            <useIncrementalCompilation>false</useIncrementalCompilation>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <compilerId>groovy-eclipse-compiler</compilerId>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-eclipse-compiler</artifactId>
+              <version>${version.groovy-eclipse-compiler}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-eclipse-batch</artifactId>
+              <version>${version.groovy-eclipse-batch}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-eclipse-compiler</artifactId>
+          <version>${version.groovy-eclipse-compiler}</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <!-- Enforce important build rules -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.4.1</version>
+          <executions>
+            <execution>
+              <id>enforcer-rules-error</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <fail>true</fail>
+                <skip>false</skip>
+                <rules>
+                  <requireMavenVersion>
+                    <version>3.2.5</version>
+                  </requireMavenVersion>
+                  <requireJavaVersion>
+                    <version>1.8</version>
+                  </requireJavaVersion>
+                  <requirePluginVersions/>
+                  <requireReleaseDeps>
+                    <onlyWhenRelease>true</onlyWhenRelease>
+                  </requireReleaseDeps>
+                  <reactorModuleConvergence/>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>enforcer-rules-warning</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <fail>false</fail>
+                <skip>false</skip>
+                <rules>
+                  <banDistributionManagement/>
+                  <dependencyConvergence/>
+                  <banDuplicateClasses>
+                    <findAllDuplicates>true</findAllDuplicates>
+                    <ignoreClasses>
+                      <!--<ignoreClass>scala.*</ignoreClass>-->
+                    </ignoreClasses>
+                    <dependencies>
+                      <!--
+                      <dependency>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-web-api</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      -->
+                    </dependencies>
+                  </banDuplicateClasses>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.0-beta-6</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <!-- Check forbidden API usage (e.g. calls using default locales) -->
+        <plugin>
+          <groupId>de.thetaphi</groupId>
+          <artifactId>forbiddenapis</artifactId>
+          <version>2.2</version>
+          <configuration>
+            <failOnUnsupportedJava>false</failOnUnsupportedJava>
+            <failOnViolation>false</failOnViolation>
+            <bundledSignatures>
+              <bundledSignature>jdk-unsafe</bundledSignature>
+              <bundledSignature>jdk-deprecated</bundledSignature>
+              <bundledSignature>jdk-internal</bundledSignature>
+              <bundledSignature>jdk-non-portable</bundledSignature>
+              <!--<bundledSignature>commons-io-unsafe-2.4</bundledSignature>-->
+            </bundledSignatures>
+            <!-- If we ever want to generate warnings for our own set of method signatures:
+            <signaturesFiles>
+              <signaturesFile>./rel/path/to/signatures.txt</signaturesFile>
+            </signaturesFiles>
+            -->
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+                <goal>testCheck</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Check for new dependency and plugin versions -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.18.1</version>
+          <configuration>
+            <excludes>
+              <exclude>**/IT*.java</exclude>
+            </excludes>
+            <systemPropertyVariables>
+              <test.tmpdir>${project.build.directory}/tmp</test.tmpdir>
+              <geb.env>${geb.env}</geb.env>
+            </systemPropertyVariables>
+            <argLine>-Dfile.encoding=UTF8</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>2.18.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.18.1</version>
+          <configuration>
+            <systemPropertyVariables>
+              <test.tmpdir>${project.build.directory}/tmp</test.tmpdir>
+              <geb.env>${geb.env}</geb.env>
+            </systemPropertyVariables>
+            <argLine>-Dfile.encoding=UTF8</argLine>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-tests</id>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+          <configuration>
+            <!-- Avoid uploading incomplete releases when build fails in submodule -->
+            <installAtEnd>true</installAtEnd>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+          <configuration>
+            <!-- Avoid uploading incomplete releases when build fails in submodule -->
+            <deployAtEnd>true</deployAtEnd>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.6</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-ssh</artifactId>
+              <version>${version.wagon-ssh}</version>
+            </dependency>
+
+            <dependency>
+              <groupId>lt.velykis.maven.skins</groupId>
+              <artifactId>reflow-velocity-tools</artifactId>
+              <version>1.1.1</version>
+            </dependency>
+            <!-- Reflow skin requires Velocity >= 1.7  -->
+            <dependency>
+              <groupId>org.apache.velocity</groupId>
+              <artifactId>velocity</artifactId>
+              <version>1.7</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <skip>false</skip>
+            <skipDeploy>false</skipDeploy>
+            <generateProjectInfo>true</generateProjectInfo>
+            <generateReports>true</generateReports>
+          </configuration>
+        </plugin>
+
+        <!-- Conveniently double-click goals like 'dependency:analyze' and 'dependency:tree' in IDEA -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+            <encoding>${project.build.sourceEncoding}</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-eclipse-compiler</artifactId>
+        <!--<extensions>true</extensions>-->
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- BoM with test dependency versions -->
+      <dependency>
+        <groupId>de.scrum-master.test</groupId>
+        <artifactId>test-bom</artifactId>
+        <version>1.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <!-- JUnit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Spock framework for unit and integration tests -->
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Spock needs Groovy -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Spock needs CGLIB for class mocking (interface mocking works out of the box) -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Spock needs objenesis for (final) class mocking without default constructors -->
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Geb is used for web UI testing in connection with Spock -->
+    <dependency>
+      <groupId>org.gebish</groupId>
+      <artifactId>geb-spock</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gebish</groupId>
+      <artifactId>geb-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gebish</groupId>
+      <artifactId>geb-implicit-assertions</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Geb needs Selenium -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-support</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.codeborne</groupId>
+      <artifactId>phantomjsdriver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-firefox-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-ie-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-edge-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-opera-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-remote-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>htmlunit-driver</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+  </dependencies>
+</project>
