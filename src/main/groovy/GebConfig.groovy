@@ -49,10 +49,8 @@ environments {
     }
   }
   opera {
-    // TODO: Currently Opera Chromium driver is not actively maintained and out of order.
-    // So this will not work. Opera will start, but Selenium cannot connect to the browser instance.
-    XXX_driver_XXX = {
-      OperaDriverManager.instance.setup()
+    driver = {
+      OperaDriverManager.instance.setup("2.27")
       new OperaDriver()
     }
   }
