@@ -26,7 +26,7 @@ environments {
   }
   chrome {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.27")
+      ChromeDriverManager.instance.setup(Architecture.x64, "2.31")
       new ChromeDriver()
     }
   }
