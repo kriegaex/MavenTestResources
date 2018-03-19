@@ -17,6 +17,12 @@ driver = {
 }
 
 environments {
+  html_unit {
+    driver = {
+      // Supports JS, but no screenshots
+      new HtmlUnitDriver(true)
+    }
+  }
   phantomjs {
     driver = {
       PhantomJsDriverManager.instance.setup("2.1.1")
