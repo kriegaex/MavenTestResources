@@ -1,6 +1,7 @@
 import io.github.bonigarcia.wdm.*
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.edge.EdgeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
@@ -26,8 +27,17 @@ environments {
   }
   chrome {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.31")
+      ChromeDriverManager.instance.setup(Architecture.x64, "2.37")
       new ChromeDriver()
+    }
+  }
+  chrome_headless {
+    driver = {
+      ChromeDriverManager.instance.setup(Architecture.x64, "2.37")
+      def options = new ChromeOptions()
+      options.addArguments("--headless")
+      options.addArguments("--disable-gpu")
+      new ChromeDriver(options)
     }
   }
   firefox {
