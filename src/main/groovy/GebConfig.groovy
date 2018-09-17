@@ -27,7 +27,7 @@ environments {
   }
   phantomjs {
     driver = {
-      PhantomJsDriverManager.instance.setup("2.1.1")
+      WebDriverManager.phantomjs().version("2.1.1").setup()
       def pjsDriver = new PhantomJSDriver()
       pjsDriver.manage().window().size = new Dimension(1024, 768)
       pjsDriver
@@ -35,13 +35,13 @@ environments {
   }
   chrome {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.41")
+      WebDriverManager.chromedriver().arch64().version("2.41").setup()
       new ChromeDriver()
     }
   }
   chrome_headless {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.41")
+      WebDriverManager.chromedriver().arch64().version("2.41").setup()
       def options = new ChromeOptions()
       options.addArguments("--headless")
       options.addArguments("--disable-gpu")
@@ -50,25 +50,25 @@ environments {
   }
   firefox {
     driver = {
-      FirefoxDriverManager.instance.setup(Architecture.x64)
+      WebDriverManager.firefoxdriver().arch64().setup()
       new FirefoxDriver()
     }
   }
   ie {
     driver = {
-      InternetExplorerDriverManager.instance.setup(Architecture.x32)
+      WebDriverManager.iedriver().arch32().setup()
       new InternetExplorerDriver()
     }
   }
   edge {
     driver = {
-      EdgeDriverManager.instance.setup()
+      WebDriverManager.edgedriver().setup()
       new EdgeDriver()
     }
   }
   opera {
     driver = {
-      OperaDriverManager.instance.setup("2.38")
+      WebDriverManager.operadriver().version("2.38").setup()
       def os = OperatingSystem.current
       def operaBinary = os.windows ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe").first()
         : os.macOs ? "/Applications/Opera.app/Contents/MacOS/Opera" : "/usr/bin/opera"
