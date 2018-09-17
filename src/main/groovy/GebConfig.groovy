@@ -7,7 +7,9 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.opera.OperaDriver
+import org.openqa.selenium.opera.OperaOptions
 import org.openqa.selenium.phantomjs.PhantomJSDriver
+import spock.util.environment.OperatingSystem
 
 reportsDir = "target/geb-reports"
 
@@ -33,13 +35,13 @@ environments {
   }
   chrome {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.37")
+      ChromeDriverManager.instance.setup(Architecture.x64, "2.41")
       new ChromeDriver()
     }
   }
   chrome_headless {
     driver = {
-      ChromeDriverManager.instance.setup(Architecture.x64, "2.37")
+      ChromeDriverManager.instance.setup(Architecture.x64, "2.41")
       def options = new ChromeOptions()
       options.addArguments("--headless")
       options.addArguments("--disable-gpu")
@@ -48,13 +50,13 @@ environments {
   }
   firefox {
     driver = {
-      FirefoxDriverManager.instance.setup(Architecture.x64, "0.14.0")
+      FirefoxDriverManager.instance.setup(Architecture.x64)
       new FirefoxDriver()
     }
   }
   ie {
     driver = {
-      InternetExplorerDriverManager.instance.setup(Architecture.x32, "3.0")
+      InternetExplorerDriverManager.instance.setup(Architecture.x32)
       new InternetExplorerDriver()
     }
   }
@@ -66,8 +68,13 @@ environments {
   }
   opera {
     driver = {
-      OperaDriverManager.instance.setup("2.27")
-      new OperaDriver()
+      OperaDriverManager.instance.setup("2.38")
+      def os = OperatingSystem.current
+      def operaBinary = os.windows ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe").first()
+        : os.macOs ? "/Applications/Opera.app/Contents/MacOS/Opera" : "/usr/bin/opera"
+      OperaOptions options = new OperaOptions()
+      options.binary = operaBinary
+      new OperaDriver(options)
     }
   }
 }
