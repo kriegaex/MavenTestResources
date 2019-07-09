@@ -5,7 +5,7 @@
 
   <groupId>de.scrum-master</groupId>
   <artifactId>test-resources</artifactId>
-  <version>1.3</version>
+  <version>1.4</version>
 
   <name>Test resources + dependencies</name>
   <description>
@@ -33,8 +33,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <!-- Groovy compiler for Spock/Geb tests -->
-    <version.groovy-eclipse-compiler>2.9.2-01</version.groovy-eclipse-compiler>
-    <version.groovy-eclipse-batch>2.4.3-01</version.groovy-eclipse-batch>
+    <version.groovy-eclipse-compiler>3.4.0-01</version.groovy-eclipse-compiler>
+    <version.groovy-eclipse-batch>2.5.7-01</version.groovy-eclipse-batch>
 
     <!-- Maven site -->
     <version.wagon-ssh>2.8</version.wagon-ssh>
@@ -49,7 +49,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.8.1</version>
           <configuration>
             <source>${maven.compiler.source}</source>
             <target>${maven.compiler.target}</target>
@@ -347,7 +347,7 @@
       <dependency>
         <groupId>de.scrum-master.test</groupId>
         <artifactId>test-bom</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -373,6 +373,7 @@
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
       <scope>compile</scope>
+      <type>pom</type>
     </dependency>
     <!-- Spock needs CGLIB for class mocking (interface mocking works out of the box) -->
     <dependency>
@@ -465,6 +466,10 @@
       <artifactId>webdrivermanager</artifactId>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>io.appium</groupId>
+      <artifactId>java-client</artifactId>
+      <version>6.1.0</version>
+    </dependency>
   </dependencies>
 </project>
