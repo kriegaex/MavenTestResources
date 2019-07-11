@@ -11,7 +11,7 @@ plus basic configuration like `GebConfig`.
 
 Please add this artifact as a dependency with `scope=test` to your project.
 
-In order to also get the right dependency versions please also import `de.scrum-master.test:test-bom`
+In order to also get the right dependency versions please also import `de.scrum-master:test-bom`
 with `type=pom`, `scope=import` from the `dependencyManagement` section of your project.
 
 See also [this test dependency BoM](https://github.com/kriegaex/MavenTestBom) and
@@ -24,9 +24,9 @@ Example:
   <dependencies>
     <!-- BoM with test dependency versions -->
     <dependency>
-      <groupId>de.scrum-master.test</groupId>
+      <groupId>de.scrum-master</groupId>
       <artifactId>test-bom</artifactId>
-      <version>1.4</version>
+      <version>1.4.1</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -34,7 +34,7 @@ Example:
     <dependency>
       <groupId>de.scrum-master</groupId>
       <artifactId>test-resources</artifactId>
-      <version>1.4</version>
+      <version>1.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
