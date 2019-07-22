@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.edge.EdgeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.opera.OperaDriver
@@ -42,7 +43,9 @@ environments {
       WebDriverManager.chromedriver().arch32().version("75.0.3770.90").setup()
       def options = new ChromeOptions()
       // Avoid "Chrome is being controlled by automated test software" pop-up
-      options.addArguments("disable-infobars");
+      options.addArguments("disable-infobars")
+      // Do ask for permission to show push notifications
+      options.addArguments("--disable-notifications")
       new ChromeDriver(options)
     }
   }
@@ -55,14 +58,21 @@ environments {
       options.addArguments("--headless")
       options.addArguments("--disable-gpu")
       // Avoid "Chrome is being controlled by automated test software" pop-up
-      options.addArguments("disable-infobars");
+      options.addArguments("disable-infobars")
+      // Do ask for permission to show push notifications
+      options.addArguments("--disable-notifications")
       new ChromeDriver(options)
     }
   }
   firefox {
     driver = {
       WebDriverManager.firefoxdriver().arch64().setup()
-      new FirefoxDriver()
+      FirefoxOptions options = new FirefoxOptions()
+      // Disable all notifications
+      options.addPreference("dom.webnotifications.enabled", false)
+      // Disable background updates (push notifications)
+      options.addPreference("dom.push.enabled", false)
+      new FirefoxDriver(options)
     }
   }
   ie {
@@ -85,6 +95,8 @@ environments {
         : os.macOs ? "/Applications/Opera.app/Contents/MacOS/Opera" : "/usr/bin/opera"
       OperaOptions options = new OperaOptions()
       options.binary = operaBinary
+      // Do ask for permission to show push notifications
+      options.addArguments("--disable-notifications")
       new OperaDriver(options)
     }
   }
