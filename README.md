@@ -34,7 +34,7 @@ Example:
     <dependency>
       <groupId>de.scrum-master</groupId>
       <artifactId>test-resources</artifactId>
-      <version>1.4.1</version>
+      <version>1.4.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

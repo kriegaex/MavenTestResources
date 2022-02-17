@@ -11,7 +11,7 @@
 
   <groupId>de.scrum-master</groupId>
   <artifactId>test-resources</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2</version>
 
   <name>Test resources + dependencies</name>
   <description>
@@ -51,7 +51,6 @@
     <url>https://github.com/kriegaex/MavenTestResources</url>
     <connection>scm:git:https://github.com/kriegaex/MavenTestResources.git</connection>
     <developerConnection>scm:git:git@github.com:kriegaex/MavenTestResources.git</developerConnection>
-    <tag>release/1.4.1</tag>
   </scm>
 
   <properties>
