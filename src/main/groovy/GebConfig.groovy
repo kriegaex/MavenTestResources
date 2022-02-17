@@ -1,6 +1,5 @@
 import io.appium.java_client.windows.WindowsDriver
-import io.github.bonigarcia.wdm.*
-import org.openqa.selenium.Dimension
+import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.edge.EdgeDriver
@@ -75,7 +74,7 @@ environments {
   }
   opera {
     driver = {
-      WebDriverManager.operadriver().version("79.0.3945.79").setup()
+      WebDriverManager.operadriver().setup()
       def os = OperatingSystem.current
       def operaBinary = os.windows
         ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe\$").sort().last()
@@ -84,7 +83,7 @@ environments {
           : "/usr/bin/opera"
       OperaOptions options = new OperaOptions()
       options.binary = operaBinary
-      // Do ask for permission to show push notifications
+      // Explicitly ask for permission to show push notifications
       options.addArguments("--disable-notifications")
       new OperaDriver(options)
     }
@@ -107,11 +106,19 @@ ChromeDriver createChromeDriver(boolean headless = false) {
     System.setProperty("webdriver.chrome.verboseLogging", "true")
     options.addArguments("--headless")
     options.addArguments("--disable-gpu")
+    // Set similar to normal Chrome window default size on 1980x1080 display, overriding headless default of 800x600.
+    // This can make a difference in drag & drop tests when measuring how far something really has been dragged, if the
+    // target view is resizable.
+    options.addArguments("--window-size=900,900")
   }
-  WebDriverManager.chromedriver().arch32().version("79.0.3945.36").setup()
-  // Avoid "Chrome is being controlled by automated test software" pop-up
-  options.addArguments("disable-infobars")
-  // Do ask for permission to show push notifications
+  WebDriverManager.chromedriver().arch32().setup()
+  /*
+  LoggingPreferences loggingPreferences = new LoggingPreferences()
+  loggingPreferences.enable(LogType.BROWSER, Level.ALL)
+  options.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences)
+  */
+
+  // Explicitly ask for permission to show push notifications
   options.addArguments("--disable-notifications")
   new ChromeDriver(options)
 }
