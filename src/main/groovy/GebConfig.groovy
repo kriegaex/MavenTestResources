@@ -10,7 +10,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.opera.OperaDriver
 import org.openqa.selenium.opera.OperaOptions
-import org.openqa.selenium.phantomjs.PhantomJSDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import spock.util.environment.OperatingSystem
 
@@ -30,6 +29,8 @@ environments {
       new HtmlUnitDriver(true)
     }
   }
+  // PhantomJS is no longer supported by WebDriverManager -> use Chrome headless instead
+  /*
   phantomjs {
     driver = {
       WebDriverManager.phantomjs().version("2.1.1").setup()
@@ -38,30 +39,15 @@ environments {
       pjsDriver
     }
   }
+  */
   chrome {
     driver = {
-      WebDriverManager.chromedriver().arch32().version("75.0.3770.90").setup()
-      def options = new ChromeOptions()
-      // Avoid "Chrome is being controlled by automated test software" pop-up
-      options.addArguments("disable-infobars")
-      // Do ask for permission to show push notifications
-      options.addArguments("--disable-notifications")
-      new ChromeDriver(options)
+      createChromeDriver()
     }
   }
   chrome_headless {
-    System.setProperty("webdriver.chrome.logfile", "chromedriver.log")
-    System.setProperty("webdriver.chrome.verboseLogging", "true")
     driver = {
-      WebDriverManager.chromedriver().arch32().version("75.0.3770.90").setup()
-      def options = new ChromeOptions()
-      options.addArguments("--headless")
-      options.addArguments("--disable-gpu")
-      // Avoid "Chrome is being controlled by automated test software" pop-up
-      options.addArguments("disable-infobars")
-      // Do ask for permission to show push notifications
-      options.addArguments("--disable-notifications")
-      new ChromeDriver(options)
+      createChromeDriver(true)
     }
   }
   firefox {
@@ -89,10 +75,13 @@ environments {
   }
   opera {
     driver = {
-      WebDriverManager.operadriver().version("2.38").setup()
+      WebDriverManager.operadriver().version("79.0.3945.79").setup()
       def os = OperatingSystem.current
-      def operaBinary = os.windows ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe").first()
-        : os.macOs ? "/Applications/Opera.app/Contents/MacOS/Opera" : "/usr/bin/opera"
+      def operaBinary = os.windows
+        ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe\$").sort().last()
+        : os.macOs
+          ? "/Applications/Opera.app/Contents/MacOS/Opera"
+          : "/usr/bin/opera"
       OperaOptions options = new OperaOptions()
       options.binary = operaBinary
       // Do ask for permission to show push notifications
@@ -109,4 +98,20 @@ environments {
       windowsDriver
     }
   }
+}
+
+ChromeDriver createChromeDriver(boolean headless = false) {
+  def options = new ChromeOptions()
+  if (headless) {
+    System.setProperty("webdriver.chrome.logfile", "chromedriver.log")
+    System.setProperty("webdriver.chrome.verboseLogging", "true")
+    options.addArguments("--headless")
+    options.addArguments("--disable-gpu")
+  }
+  WebDriverManager.chromedriver().arch32().version("79.0.3945.36").setup()
+  // Avoid "Chrome is being controlled by automated test software" pop-up
+  options.addArguments("disable-infobars")
+  // Do ask for permission to show push notifications
+  options.addArguments("--disable-notifications")
+  new ChromeDriver(options)
 }
