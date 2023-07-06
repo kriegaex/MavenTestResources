@@ -10,7 +10,6 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
 import org.openqa.selenium.firefox.GeckoDriverService
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.opera.OperaDriver
 import org.openqa.selenium.opera.OperaOptions
 import org.openqa.selenium.remote.DesiredCapabilities
@@ -61,12 +60,6 @@ environments {
   firefox_headless {
     driver = {
       createFirefoxDriver(true)
-    }
-  }
-  ie {
-    driver = {
-      WebDriverManager.iedriver().arch32().setup()
-      new InternetExplorerDriver()
     }
   }
   edge {
