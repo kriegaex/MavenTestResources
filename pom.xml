@@ -11,7 +11,7 @@
 
   <groupId>de.scrum-master</groupId>
   <artifactId>test-resources</artifactId>
-  <version>1.4.2</version>
+  <version>1.4.3-SNAPSHOT</version>
 
   <name>Test resources + dependencies</name>
   <description>
@@ -476,7 +476,7 @@
       <dependency>
         <groupId>de.scrum-master</groupId>
         <artifactId>test-bom</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -585,10 +585,28 @@
       <artifactId>htmlunit-driver</artifactId>
       <scope>compile</scope>
     </dependency>
+    <!-- Needed for custom HtmlUnitDriver with WebClient ignoring JS/CSS errors used in GebConfig -->
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <scope>compile</scope>
+    </dependency>
     <!-- HtmlUnit needs this -->
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- HtmlUnit needs this -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- HtmlUnit needs this -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
