@@ -73,6 +73,8 @@ environments {
       def webDriverManager = WebDriverManager.operadriver()
       webDriverManager.setup()
       OperaOptions options = new OperaOptions()
+      // TODO: Is this block still necessary, e.g. for GitHub builds?
+      /*
       def os = OperatingSystem.current
       def operaBinary = os.windows
         ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe\$").sort().last()
@@ -80,6 +82,7 @@ environments {
           ? "/Applications/Opera.app/Contents/MacOS/Opera"
           : "/usr/bin/opera"
       options.binary = operaBinary
+      */
       // Somehow WDM does not set this property automatically for Opera,
       // see https://github.com/bonigarcia/webdrivermanager/issues/1069
       System.setProperty('webdriver.opera.driver', webDriverManager.downloadedDriverPath)
