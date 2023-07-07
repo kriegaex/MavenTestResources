@@ -70,15 +70,19 @@ environments {
   }
   opera {
     driver = {
-      WebDriverManager.operadriver().setup()
+      def webDriverManager = WebDriverManager.operadriver()
+      webDriverManager.setup()
+      OperaOptions options = new OperaOptions()
       def os = OperatingSystem.current
       def operaBinary = os.windows
         ? new FileNameByRegexFinder().getFileNames("c:\\Program Files\\Opera", "opera.exe\$").sort().last()
         : os.macOs
           ? "/Applications/Opera.app/Contents/MacOS/Opera"
           : "/usr/bin/opera"
-      OperaOptions options = new OperaOptions()
       options.binary = operaBinary
+      // Somehow WDM does not set this property automatically for Opera,
+      // see https://github.com/bonigarcia/webdrivermanager/issues/1069
+      System.setProperty('webdriver.opera.driver', webDriverManager.downloadedDriverPath)
       // Explicitly ask for permission to show push notifications
       options.addArguments("--disable-notifications")
       new OperaDriver(options)
